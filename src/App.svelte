@@ -7,9 +7,10 @@
   import { typedCharacters } from './lib/stores/game';
   import { calculateMetrics } from './lib/engine/metrics';
   import { initTypingState } from './lib/engine/state';
-  import { onMount } from 'svelte';
 
-  let metrics = { grossWpm: 0, netWpm: 0, accuracy: 100, elapsedMs: 0, consistency: 0, timeToFirstError: null };
+  import type { Metrics } from './lib/engine/metrics';
+
+  let metrics: Metrics = { grossWpm: 0, netWpm: 0, accuracy: 100, elapsedMs: 0, consistency: 0, timeToFirstError: null };
   let elapsedMs = 0;
   let finalMetricsCalculated = false;
 
