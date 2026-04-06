@@ -46,6 +46,7 @@ scripts/
 ### Task 1: Project Setup - Add Tailwind CSS
 
 **Files:**
+
 - Modify: `package.json`
 - Create: `tailwind.config.js`
 - Create: `postcss.config.js`
@@ -54,7 +55,7 @@ scripts/
 - [ ] **Step 1: Install Tailwind CSS**
 
 ```bash
-npm install -D tailwindcss postcss autoprefixer
+npm install -D tailwindcss postcss @tailwindcss/postcss
 npx tailwindcss init -p
 ```
 
@@ -63,25 +64,25 @@ npx tailwindcss init -p
 ```javascript
 /** @type {import('tailwindcss').Config} */
 export default {
-  content: ['./src/**/*.{html,js,svelte,ts}'],
+  content: ["./src/**/*.{html,js,svelte,ts}"],
   theme: {
     extend: {
       colors: {
-        bg: '#0d1117',
-        surface: '#161b22',
-        border: '#30363d',
-        correct: '#3fb950',
-        incorrect: '#f85149',
-        pending: '#8b949e',
-        accent: '#58a6ff',
+        bg: "#0d1117",
+        surface: "#161b22",
+        border: "#30363d",
+        correct: "#3fb950",
+        incorrect: "#f85149",
+        pending: "#8b949e",
+        accent: "#58a6ff",
       },
       fontFamily: {
-        mono: ['JetBrains Mono', 'monospace'],
+        mono: ["JetBrains Mono", "monospace"],
       },
     },
   },
   plugins: [],
-}
+};
 ```
 
 - [ ] **Step 3: Update postcss.config.js**
@@ -89,10 +90,9 @@ export default {
 ```javascript
 export default {
   plugins: {
-    tailwindcss: {},
-    autoprefixer: {},
+    "@tailwindcss/postcss": {},
   },
-}
+};
 ```
 
 - [ ] **Step 4: Update src/app.css**
@@ -123,6 +123,7 @@ git commit -m "chore: add Tailwind CSS for styling"
 ### Task 2: Create Placeholder Snippets JSON
 
 **Files:**
+
 - Create: `src/lib/data/snippets.json`
 
 - [ ] **Step 1: Create snippets.json with placeholder data**
@@ -214,28 +215,29 @@ git commit -m "data: add placeholder snippets for development"
 ### Task 3: Game State Stores
 
 **Files:**
+
 - Create: `src/lib/stores/game.ts`
 
 - [ ] **Step 1: Write test for game store**
 
 ```typescript
 // src/lib/stores/game.test.ts
-import { describe, it, expect } from 'vitest';
-import { gameState, selectedLanguage, selectedDifficulty } from './game';
+import { describe, it, expect } from "vitest";
+import { gameState, selectedLanguage, selectedDifficulty } from "./game";
 
-describe('gameStore', () => {
-  it('should have default state', () => {
-    expect($gameState).toBe('config');
+describe("gameStore", () => {
+  it("should have default state", () => {
+    expect($gameState).toBe("config");
   });
 
-  it('should allow language selection', () => {
-    selectedLanguage.set('python');
-    expect($selectedLanguage).toBe('python');
+  it("should allow language selection", () => {
+    selectedLanguage.set("python");
+    expect($selectedLanguage).toBe("python");
   });
 
-  it('should allow difficulty selection', () => {
-    selectedDifficulty.set('medium');
-    expect($selectedDifficulty).toBe('medium');
+  it("should allow difficulty selection", () => {
+    selectedDifficulty.set("medium");
+    expect($selectedDifficulty).toBe("medium");
   });
 });
 ```
@@ -252,15 +254,22 @@ Expected: FAIL - file doesn't exist yet
 
 ```typescript
 // src/lib/stores/game.ts
-import { writable, derived } from 'svelte/store';
+import { writable, derived } from "svelte/store";
 
-export type GameState = 'config' | 'idle' | 'active' | 'results';
-export type Language = 'python' | 'javascript' | 'typescript' | 'go' | 'rust' | 'c' | 'cpp';
-export type Difficulty = 'easy' | 'medium' | 'hard' | 'any';
+export type GameState = "config" | "idle" | "active" | "results";
+export type Language =
+  | "python"
+  | "javascript"
+  | "typescript"
+  | "go"
+  | "rust"
+  | "c"
+  | "cpp";
+export type Difficulty = "easy" | "medium" | "hard" | "any";
 
-export const gameState = writable<GameState>('config');
-export const selectedLanguage = writable<Language>('python');
-export const selectedDifficulty = writable<Difficulty>('any');
+export const gameState = writable<GameState>("config");
+export const selectedLanguage = writable<Language>("python");
+export const selectedDifficulty = writable<Difficulty>("any");
 
 export const currentSnippet = writable<Snippet | null>(null);
 export const typedCharacters = writable<CharState[]>([]);
@@ -278,7 +287,7 @@ export interface Snippet {
 
 export interface CharState {
   char: string;
-  state: 'pending' | 'correct' | 'incorrect';
+  state: "pending" | "correct" | "incorrect";
   errors: number;
 }
 ```
@@ -303,28 +312,33 @@ git commit -m "feat: add game state stores"
 ### Task 4: Config Component
 
 **Files:**
+
 - Create: `src/lib/components/Config.svelte`
 
 - [ ] **Step 1: Write test for Config component**
 
 ```typescript
 // src/lib/components/Config.test.ts
-import { describe, it, expect } from 'vitest';
-import { render, screen } from '@testing-library/svelte';
-import Config from './Config.svelte';
-import { gameState, selectedLanguage, selectedDifficulty } from '../stores/game';
+import { describe, it, expect } from "vitest";
+import { render, screen } from "@testing-library/svelte";
+import Config from "./Config.svelte";
+import {
+  gameState,
+  selectedLanguage,
+  selectedDifficulty,
+} from "../stores/game";
 
-describe('Config', () => {
-  it('should render language options', () => {
+describe("Config", () => {
+  it("should render language options", () => {
     render(Config);
-    expect(screen.getByText('Python')).toBeDefined();
-    expect(screen.getByText('JavaScript')).toBeDefined();
+    expect(screen.getByText("Python")).toBeDefined();
+    expect(screen.getByText("JavaScript")).toBeDefined();
   });
 
-  it('should render difficulty options', () => {
+  it("should render difficulty options", () => {
     render(Config);
-    expect(screen.getByText('Easy')).toBeDefined();
-    expect(screen.getByText('Medium')).toBeDefined();
+    expect(screen.getByText("Easy")).toBeDefined();
+    expect(screen.getByText("Medium")).toBeDefined();
   });
 });
 ```
@@ -385,8 +399,8 @@ Expected: FAIL - component doesn't exist
     <div class="flex flex-wrap gap-3 justify-center">
       {#each languages as lang}
         <button
-          class="px-6 py-3 rounded-lg border transition-all {$selectedLanguage === lang.id 
-            ? 'border-accent bg-accent/10 text-accent' 
+          class="px-6 py-3 rounded-lg border transition-all {$selectedLanguage === lang.id
+            ? 'border-accent bg-accent/10 text-accent'
             : 'border-border hover:border-gray-500'}"
           on:click={() => selectedLanguage.set(lang.id)}
         >
@@ -401,8 +415,8 @@ Expected: FAIL - component doesn't exist
     <div class="flex gap-3 justify-center">
       {#each difficulties as diff}
         <button
-          class="px-6 py-2 rounded-lg border transition-all {$selectedDifficulty === diff.id 
-            ? 'border-accent bg-accent/10 text-accent' 
+          class="px-6 py-2 rounded-lg border transition-all {$selectedDifficulty === diff.id
+            ? 'border-accent bg-accent/10 text-accent'
             : 'border-border hover:border-gray-500'}"
           on:click={() => selectedDifficulty.set(diff.id)}
         >
@@ -441,6 +455,7 @@ git commit -m "feat: add Config component for language/difficulty selection"
 ### Task 5: Character Component
 
 **Files:**
+
 - Create: `src/lib/components/Character.svelte`
 
 - [ ] **Step 1: Write the Character component**
@@ -481,6 +496,7 @@ git commit -m "feat: add Character component for typed display"
 ### Task 6: Typing Engine - State Management
 
 **Files:**
+
 - Create: `src/lib/engine/state.ts`
 - Create: `src/lib/engine/state.test.ts`
 
@@ -488,42 +504,42 @@ git commit -m "feat: add Character component for typed display"
 
 ```typescript
 // src/lib/engine/state.test.ts
-import { describe, it, expect } from 'vitest';
-import { initTypingState, processKeystroke, type TypingEngine } from './state';
+import { describe, it, expect } from "vitest";
+import { initTypingState, processKeystroke, type TypingEngine } from "./state";
 
-describe('typingEngine', () => {
-  it('should initialize correctly', () => {
-    const engine = initTypingState('hello');
+describe("typingEngine", () => {
+  it("should initialize correctly", () => {
+    const engine = initTypingState("hello");
     expect(engine.currentIndex).toBe(0);
     expect(engine.startTime).toBeNull();
     expect(engine.charStates.length).toBe(5);
   });
 
-  it('should process correct keystroke', () => {
-    const engine = initTypingState('hello');
-    const result = processKeystroke(engine, 'h');
-    expect(result.charStates[0].state).toBe('correct');
+  it("should process correct keystroke", () => {
+    const engine = initTypingState("hello");
+    const result = processKeystroke(engine, "h");
+    expect(result.charStates[0].state).toBe("correct");
     expect(result.startTime).not.toBeNull();
   });
 
-  it('should process incorrect keystroke', () => {
-    const engine = initTypingState('hello');
-    const result = processKeystroke(engine, 'x');
-    expect(result.charStates[0].state).toBe('incorrect');
+  it("should process incorrect keystroke", () => {
+    const engine = initTypingState("hello");
+    const result = processKeystroke(engine, "x");
+    expect(result.charStates[0].state).toBe("incorrect");
     expect(result.charStates[0].errors).toBe(1);
   });
 
-  it('should handle backspace', () => {
-    const engine = initTypingState('hello');
-    let result = processKeystroke(engine, 'h');
-    result = processKeystroke(result, 'Backspace');
-    expect(result.charStates[0].state).toBe('pending');
+  it("should handle backspace", () => {
+    const engine = initTypingState("hello");
+    let result = processKeystroke(engine, "h");
+    result = processKeystroke(result, "Backspace");
+    expect(result.charStates[0].state).toBe("pending");
   });
 
-  it('should detect completion', () => {
-    const engine = initTypingState('hi');
-    let result = processKeystroke(engine, 'h');
-    result = processKeystroke(result, 'i');
+  it("should detect completion", () => {
+    const engine = initTypingState("hi");
+    let result = processKeystroke(engine, "h");
+    result = processKeystroke(result, "i");
     expect(result.isComplete).toBe(true);
   });
 });
@@ -541,7 +557,7 @@ Expected: FAIL
 
 ```typescript
 // src/lib/engine/state.ts
-import type { CharState } from '../stores/game';
+import type { CharState } from "../stores/game";
 
 export interface TypingEngine {
   chars: string;
@@ -557,9 +573,9 @@ export function initTypingState(chars: string): TypingEngine {
   return {
     chars,
     currentIndex: 0,
-    charStates: chars.split('').map((c) => ({
+    charStates: chars.split("").map((c) => ({
       char: c,
-      state: 'pending' as const,
+      state: "pending" as const,
       errors: 0,
     })),
     startTime: null,
@@ -569,14 +585,17 @@ export function initTypingState(chars: string): TypingEngine {
   };
 }
 
-export function processKeystroke(engine: TypingEngine, key: string): TypingEngine {
+export function processKeystroke(
+  engine: TypingEngine,
+  key: string,
+): TypingEngine {
   const now = performance.now();
-  
-  if (key === 'Backspace') {
+
+  if (key === "Backspace") {
     if (engine.currentIndex > 0) {
       const newIndex = engine.currentIndex - 1;
-      const newStates = engine.charStates.map((s, i) => 
-        i === newIndex ? { ...s, state: 'pending' as const } : s
+      const newStates = engine.charStates.map((s, i) =>
+        i === newIndex ? { ...s, state: "pending" as const } : s,
       );
       return { ...engine, currentIndex: newIndex, charStates: newStates };
     }
@@ -585,19 +604,19 @@ export function processKeystroke(engine: TypingEngine, key: string): TypingEngin
 
   const startTime = engine.startTime ?? now;
   const keystrokeTimes = [...engine.keystrokeTimes, now];
-  
+
   if (engine.currentIndex >= engine.chars.length) {
     return engine;
   }
 
   const expectedChar = engine.chars[engine.currentIndex];
   const isCorrect = key === expectedChar;
-  
+
   const newStates = engine.charStates.map((s, i) => {
     if (i === engine.currentIndex) {
       return {
         ...s,
-        state: isCorrect ? 'correct' as const : 'incorrect' as const,
+        state: isCorrect ? ("correct" as const) : ("incorrect" as const),
         errors: isCorrect ? s.errors : s.errors + 1,
       };
     }
@@ -639,6 +658,7 @@ git commit -m "feat: add typing engine state management"
 ### Task 7: Typing Engine - Metrics
 
 **Files:**
+
 - Create: `src/lib/engine/metrics.ts`
 - Create: `src/lib/engine/metrics.test.ts`
 
@@ -646,29 +666,31 @@ git commit -m "feat: add typing engine state management"
 
 ```typescript
 // src/lib/engine/metrics.test.ts
-import { describe, it, expect } from 'vitest';
-import { calculateMetrics, type Metrics } from './metrics';
-import type { TypingEngine } from './state';
+import { describe, it, expect } from "vitest";
+import { calculateMetrics, type Metrics } from "./metrics";
+import type { TypingEngine } from "./state";
 
-describe('metrics', () => {
-  it('should calculate WPM correctly', () => {
+describe("metrics", () => {
+  it("should calculate WPM correctly", () => {
     const engine: TypingEngine = {
-      chars: 'hello world test',
+      chars: "hello world test",
       currentIndex: 17,
       charStates: [],
       startTime: 0,
-      keystrokeTimes: Array(17).fill(0).map((_, i) => (i + 1) * 100),
+      keystrokeTimes: Array(17)
+        .fill(0)
+        .map((_, i) => (i + 1) * 100),
       totalErrors: 0,
       isComplete: true,
     };
-    
+
     const metrics = calculateMetrics(engine, 17000);
     expect(metrics.grossWpm).toBeGreaterThan(50);
   });
 
-  it('should calculate accuracy', () => {
+  it("should calculate accuracy", () => {
     const engine: TypingEngine = {
-      chars: 'abc',
+      chars: "abc",
       currentIndex: 3,
       charStates: [],
       startTime: 0,
@@ -676,7 +698,7 @@ describe('metrics', () => {
       totalErrors: 1,
       isComplete: true,
     };
-    
+
     const metrics = calculateMetrics(engine, 300);
     expect(metrics.accuracy).toBeCloseTo(66.67, 0);
   });
@@ -695,7 +717,7 @@ Expected: FAIL
 
 ```typescript
 // src/lib/engine/metrics.ts
-import type { TypingEngine } from './state';
+import type { TypingEngine } from "./state";
 
 export interface Metrics {
   grossWpm: number;
@@ -706,15 +728,19 @@ export interface Metrics {
   timeToFirstError: number | null;
 }
 
-export function calculateMetrics(engine: TypingEngine, elapsedMs: number): Metrics {
+export function calculateMetrics(
+  engine: TypingEngine,
+  elapsedMs: number,
+): Metrics {
   const minutes = elapsedMs / 60000;
   const charsTyped = engine.currentIndex;
   const grossWpm = minutes > 0 ? charsTyped / 5 / minutes : 0;
   const netWpm = grossWpm - (engine.totalErrors / minutes || 0);
-  
-  const accuracy = charsTyped > 0 
-    ? ((charsTyped - engine.totalErrors) / charsTyped) * 100 
-    : 100;
+
+  const accuracy =
+    charsTyped > 0
+      ? ((charsTyped - engine.totalErrors) / charsTyped) * 100
+      : 100;
 
   let consistency = 0;
   if (engine.keystrokeTimes.length > 2) {
@@ -723,15 +749,18 @@ export function calculateMetrics(engine: TypingEngine, elapsedMs: number): Metri
       intervals.push(engine.keystrokeTimes[i] - engine.keystrokeTimes[i - 1]);
     }
     const mean = intervals.reduce((a, b) => a + b, 0) / intervals.length;
-    const variance = intervals.reduce((sum, val) => sum + Math.pow(val - mean, 2), 0) / intervals.length;
+    const variance =
+      intervals.reduce((sum, val) => sum + Math.pow(val - mean, 2), 0) /
+      intervals.length;
     const stdDev = Math.sqrt(variance);
     consistency = mean > 0 ? Math.max(0, (1 - stdDev / mean) * 100) : 100;
   }
 
-  const firstErrorIdx = engine.charStates.findIndex(s => s.errors > 0);
-  const timeToFirstError = firstErrorIdx >= 0 && engine.keystrokeTimes[firstErrorIdx] 
-    ? engine.keystrokeTimes[firstErrorIdx] 
-    : null;
+  const firstErrorIdx = engine.charStates.findIndex((s) => s.errors > 0);
+  const timeToFirstError =
+    firstErrorIdx >= 0 && engine.keystrokeTimes[firstErrorIdx]
+      ? engine.keystrokeTimes[firstErrorIdx]
+      : null;
 
   return {
     grossWpm: Math.round(grossWpm),
@@ -764,6 +793,7 @@ git commit -m "feat: add metrics calculation (WPM, accuracy, consistency)"
 ### Task 8: TypingArea Component
 
 **Files:**
+
 - Create: `src/lib/components/TypingArea.svelte`
 
 - [ ] **Step 1: Write the TypingArea component**
@@ -795,9 +825,9 @@ git commit -m "feat: add metrics calculation (WPM, accuracy, consistency)"
       return;
     }
     if (e.ctrlKey || e.metaKey) return;
-    
+
     e.preventDefault();
-    
+
     if (e.key === 'Tab') {
       engine = processKeystroke(engine, '\t');
     } else if (e.key === 'Enter') {
@@ -807,16 +837,16 @@ git commit -m "feat: add metrics calculation (WPM, accuracy, consistency)"
     } else if (e.key.length === 1) {
       engine = processKeystroke(engine, e.key);
     }
-    
+
     typedCharacters.set(engine.charStates);
-    
+
     if (engine.startTime && !timerInterval) {
       startTime = engine.startTime;
       timerInterval = setInterval(() => {
         metrics = calculateMetrics(engine!, performance.now() - startTime);
       }, 500);
     }
-    
+
     if (engine.isComplete) {
       if (timerInterval) clearInterval(timerInterval);
       metrics = calculateMetrics(engine, performance.now() - startTime);
@@ -840,13 +870,13 @@ git commit -m "feat: add metrics calculation (WPM, accuracy, consistency)"
         Change
       </button>
     </div>
-    
+
     <div class="bg-surface rounded-lg p-6 font-mono text-lg leading-relaxed border border-border">
       {#each $typedCharacters as char, i}
         <Character {char} isCursor={i === engine?.currentIndex} />
       {/each}
     </div>
-    
+
     <div class="flex justify-between mt-4 text-gray-400">
       <span>WPM: {metrics.netWpm}</span>
       <span>Accuracy: {metrics.accuracy}%</span>
@@ -870,6 +900,7 @@ git commit -m "feat: add TypingArea component with keystroke handling"
 ### Task 9: Results Component
 
 **Files:**
+
 - Create: `src/lib/components/Results.svelte`
 
 - [ ] **Step 1: Write the Results component**
@@ -880,7 +911,7 @@ git commit -m "feat: add TypingArea component with keystroke handling"
   import { gameState, currentSnippet, typedCharacters } from '../stores/game';
   import type { Metrics } from '../engine/metrics';
   import { calculateMetrics } from '../engine/metrics';
-  
+
   export let metrics: Metrics;
   export let elapsedMs: number;
 
@@ -902,7 +933,7 @@ git commit -m "feat: add TypingArea component with keystroke handling"
 <div class="fixed inset-0 bg-bg/95 flex items-center justify-center p-8">
   <div class="max-w-2xl w-full bg-surface rounded-xl p-8 border border-border">
     <h2 class="text-3xl font-bold mb-6 text-accent">Results</h2>
-    
+
     <div class="grid grid-cols-3 gap-4 mb-8">
       <div class="text-center p-4 bg-bg rounded-lg">
         <div class="text-4xl font-bold text-correct">{metrics.netWpm}</div>
@@ -917,7 +948,7 @@ git commit -m "feat: add TypingArea component with keystroke handling"
         <div class="text-sm text-gray-500">Accuracy</div>
       </div>
     </div>
-    
+
     <div class="grid grid-cols-2 gap-4 mb-8">
       <div class="p-4 bg-bg rounded-lg">
         <div class="text-lg font-bold">{metrics.consistency}%</div>
@@ -930,14 +961,14 @@ git commit -m "feat: add TypingArea component with keystroke handling"
         <div class="text-sm text-gray-500">Time</div>
       </div>
     </div>
-    
+
     {#if $currentSnippet}
       <div class="text-sm text-gray-500 mb-6">
         <p>From: {$currentSnippet.repo}</p>
         <p class="truncate">{$currentSnippet.file}</p>
       </div>
     {/if}
-    
+
     <div class="flex gap-4">
       <button class="flex-1 py-3 bg-accent text-bg font-bold rounded-lg hover:bg-accent/80" on:click={newSnippet}>
         New Snippet
@@ -965,6 +996,7 @@ git commit -m "feat: add Results component with metrics display"
 ### Task 10: Main App Integration
 
 **Files:**
+
 - Modify: `src/App.svelte`
 
 - [ ] **Step 1: Write the main App component**
@@ -985,7 +1017,7 @@ git commit -m "feat: add Results component with metrics display"
 
   $: if ($gameState === 'idle' && $selectedLanguage && $selectedDifficulty) {
     const filtered = snippets.filter(
-      (s: Snippet) => s.lang === $selectedLanguage && 
+      (s: Snippet) => s.lang === $selectedLanguage &&
       ($selectedDifficulty === 'any' || s.difficulty === $selectedDifficulty)
     );
     if (filtered.length > 0) {
@@ -1039,6 +1071,7 @@ git commit -m "feat: integrate all components in main App"
 ### Task 11: StatsBar Component (Optional Enhancement)
 
 **Files:**
+
 - Create: `src/lib/components/StatsBar.svelte`
 
 - [ ] **Step 1: Write the StatsBar component**
@@ -1082,6 +1115,7 @@ git commit -m "feat: add StatsBar component for live stats display"
 ### Task 12: Corpus Pipeline - Setup
 
 **Files:**
+
 - Modify: `package.json`
 - Create: `scripts/extract/index.ts`
 
@@ -1129,6 +1163,7 @@ git commit -m "chore: add tsx for corpus pipeline"
 ### Task 13: Corpus Pipeline - Repo Configuration
 
 **Files:**
+
 - Create: `scripts/extract/repos.ts`
 
 - [ ] **Step 1: Write the repo configuration**
@@ -1144,29 +1179,34 @@ export interface RepoConfig {
 
 export const REPOS: RepoConfig[] = [
   // Python
-  { lang: 'python', owner: 'psf', repo: 'requests', branch: 'main' },
-  { lang: 'python', owner: 'pallets', repo: 'flask', branch: 'main' },
-  { lang: 'python', owner: 'psf', repo: 'urllib3', branch: 'main' },
-  
+  { lang: "python", owner: "psf", repo: "requests", branch: "main" },
+  { lang: "python", owner: "pallets", repo: "flask", branch: "main" },
+  { lang: "python", owner: "psf", repo: "urllib3", branch: "main" },
+
   // JavaScript/TypeScript
-  { lang: 'javascript', owner: 'facebook', repo: 'react', branch: 'main' },
-  { lang: 'javascript', owner: 'nodejs', repo: 'node', branch: 'main' },
-  { lang: 'typescript', owner: 'microsoft', repo: 'typescript', branch: 'main' },
-  
+  { lang: "javascript", owner: "facebook", repo: "react", branch: "main" },
+  { lang: "javascript", owner: "nodejs", repo: "node", branch: "main" },
+  {
+    lang: "typescript",
+    owner: "microsoft",
+    repo: "typescript",
+    branch: "main",
+  },
+
   // Go
-  { lang: 'go', owner: 'gin-gonic', repo: 'gin', branch: 'master' },
-  { lang: 'go', owner: 'spf13', repo: 'cobra', branch: 'main' },
-  
+  { lang: "go", owner: "gin-gonic", repo: "gin", branch: "master" },
+  { lang: "go", owner: "spf13", repo: "cobra", branch: "main" },
+
   // Rust
-  { lang: 'rust', owner: 'tokio-rs', repo: 'tokio', branch: 'main' },
-  { lang: 'rust', owner: 'BurntSushi', repo: 'ripgrep', branch: 'main' },
-  
+  { lang: "rust", owner: "tokio-rs", repo: "tokio", branch: "main" },
+  { lang: "rust", owner: "BurntSushi", repo: "ripgrep", branch: "main" },
+
   // C
-  { lang: 'c', owner: 'redis', repo: 'redis', branch: 'unstable' },
+  { lang: "c", owner: "redis", repo: "redis", branch: "unstable" },
 ];
 
 export function getReposByLanguage(lang: string): RepoConfig[] {
-  return REPOS.filter(r => r.lang === lang);
+  return REPOS.filter((r) => r.lang === lang);
 }
 ```
 
@@ -1182,14 +1222,15 @@ git commit -m "feat: add repo configuration for corpus extraction"
 ### Task 14: Corpus Pipeline - Snippet Extractor
 
 **Files:**
+
 - Create: `scripts/extract/extractor.ts`
 
 - [ ] **Step 1: Write the snippet extractor**
 
 ```typescript
 // scripts/extract/extractor.ts
-import * as fs from 'fs';
-import * as path from 'path';
+import * as fs from "fs";
+import * as path from "path";
 
 const MIN_LENGTH = 80;
 const MAX_LENGTH = 300;
@@ -1220,48 +1261,51 @@ export function isValidSnippet(content: string): boolean {
   if (content.length < MIN_LENGTH || content.length > MAX_LENGTH) {
     return false;
   }
-  
+
   for (const pattern of GENERATED_PATTERNS) {
     if (pattern.test(content)) {
       return false;
     }
   }
-  
+
   if (LICENSE_BLOCK_START.test(content)) {
     return false;
   }
-  
-  if (content.includes('\u0000')) {
+
+  if (content.includes("\u0000")) {
     return false;
   }
-  
-  const lines = content.split('\n');
+
+  const lines = content.split("\n");
   for (const line of lines) {
     if (/^\s*$/.test(line)) continue;
-    if (line.trim().length === 0 && lines.filter(l => l.trim().length > 0).length === 0) {
+    if (
+      line.trim().length === 0 &&
+      lines.filter((l) => l.trim().length > 0).length === 0
+    ) {
       return false;
     }
   }
-  
+
   return true;
 }
 
 export function extractSnippetsFromFile(filePath: string): CandidateSnippet[] {
   const snippets: CandidateSnippet[] = [];
-  
+
   try {
-    const content = fs.readFileSync(filePath, 'utf-8');
-    const lines = content.split('\n');
-    
+    const content = fs.readFileSync(filePath, "utf-8");
+    const lines = content.split("\n");
+
     let window: string[] = [];
     let startLine = 0;
-    
+
     for (let i = 0; i < lines.length; i++) {
       const line = lines[i];
-      
+
       window.push(line);
-      const windowContent = window.join('\n');
-      
+      const windowContent = window.join("\n");
+
       if (windowContent.length >= MIN_LENGTH) {
         if (isValidSnippet(windowContent)) {
           snippets.push({
@@ -1271,8 +1315,8 @@ export function extractSnippetsFromFile(filePath: string): CandidateSnippet[] {
           });
         }
       }
-      
-      while (window.join('\n').length > MAX_LENGTH && window.length > 1) {
+
+      while (window.join("\n").length > MAX_LENGTH && window.length > 1) {
         window.shift();
         startLine++;
       }
@@ -1280,21 +1324,26 @@ export function extractSnippetsFromFile(filePath: string): CandidateSnippet[] {
   } catch (error) {
     // Skip files that can't be read
   }
-  
+
   return snippets;
 }
 
 export function walkDirectory(dir: string, extensions: string[]): string[] {
   const files: string[] = [];
-  
+
   function walk(currentDir: string) {
     const entries = fs.readdirSync(currentDir, { withFileTypes: true });
-    
+
     for (const entry of entries) {
       const fullPath = path.join(currentDir, entry.name);
-      
+
       if (entry.isDirectory()) {
-        if (entry.name.startsWith('.') || entry.name === 'node_modules' || entry.name === 'test' || entry.name === 'tests') {
+        if (
+          entry.name.startsWith(".") ||
+          entry.name === "node_modules" ||
+          entry.name === "test" ||
+          entry.name === "tests"
+        ) {
           continue;
         }
         walk(fullPath);
@@ -1306,7 +1355,7 @@ export function walkDirectory(dir: string, extensions: string[]): string[] {
       }
     }
   }
-  
+
   walk(dir);
   return files;
 }
@@ -1324,51 +1373,52 @@ git commit -m "feat: add snippet extractor for corpus pipeline"
 ### Task 15: Corpus Pipeline - Difficulty Scorer
 
 **Files:**
+
 - Create: `scripts/extract/scorer.ts`
 
 - [ ] **Step 1: Write the difficulty scorer**
 
 ```typescript
 // scripts/extract/scorer.ts
-type Difficulty = 'easy' | 'medium' | 'hard';
+type Difficulty = "easy" | "medium" | "hard";
 
 const SYMBOL_CHARS = /[{}[\]();:<>!?@#$%^&*+=|\\~`]/g;
 
 export function calculateDifficulty(content: string): Difficulty {
   const symbols = (content.match(SYMBOL_CHARS) || []).length;
-  const totalChars = content.replace(/\s/g, '').length;
+  const totalChars = content.replace(/\s/g, "").length;
   const symbolDensity = totalChars > 0 ? symbols / totalChars : 0;
-  
+
   const hasGenerics = /<[A-Z][a-zA-Z]*>/.test(content);
   const hasMacros = /#\s*(define|ifdef|ifndef|pragma)/.test(content);
   const hasRegex = /\/(?:[^\/\\]|\\.)*\/[gimsuy]*/.test(content);
-  
+
   let nestingDepth = 0;
   let maxNesting = 0;
   for (const char of content) {
-    if (char === '{' || char === '(' || char === '[') {
+    if (char === "{" || char === "(" || char === "[") {
       nestingDepth++;
       maxNesting = Math.max(maxNesting, nestingDepth);
-    } else if (char === '}' || char === ')' || char === ']') {
+    } else if (char === "}" || char === ")" || char === "]") {
       nestingDepth--;
     }
   }
-  
+
   let score = 0;
-  
+
   if (symbolDensity > 0.35) score += 2;
   else if (symbolDensity > 0.15) score += 1;
-  
+
   if (hasGenerics) score += 2;
   if (hasMacros) score += 2;
   if (hasRegex) score += 1;
-  
+
   if (maxNesting >= 4) score += 2;
   else if (maxNesting >= 2) score += 1;
-  
-  if (score >= 5) return 'hard';
-  if (score >= 2) return 'medium';
-  return 'easy';
+
+  if (score >= 5) return "hard";
+  if (score >= 2) return "medium";
+  return "easy";
 }
 ```
 
@@ -1384,26 +1434,27 @@ git commit -m "feat: add difficulty scorer for corpus pipeline"
 ### Task 16: Corpus Pipeline - Main Entry Point
 
 **Files:**
+
 - Create: `scripts/extract/index.ts`
 
 - [ ] **Step 1: Write the main pipeline script**
 
 ```typescript
 // scripts/extract/index.ts
-import * as fs from 'fs';
-import * as path from 'path';
-import { REPOS, getReposByLanguage, type RepoConfig } from './repos';
-import { extractSnippetsFromFile, walkDirectory } from './extractor';
-import { calculateDifficulty } from './scorer';
+import * as fs from "fs";
+import * as path from "path";
+import { REPOS, getReposByLanguage, type RepoConfig } from "./repos";
+import { extractSnippetsFromFile, walkDirectory } from "./extractor";
+import { calculateDifficulty } from "./scorer";
 
 const EXTENSIONS: Record<string, string[]> = {
-  python: ['py'],
-  javascript: ['js', 'jsx', 'ts', 'tsx'],
-  typescript: ['ts', 'tsx'],
-  go: ['go'],
-  rust: ['rs'],
-  c: ['c', 'h'],
-  cpp: ['cpp', 'cc', 'cxx', 'hpp'],
+  python: ["py"],
+  javascript: ["js", "jsx", "ts", "tsx"],
+  typescript: ["ts", "tsx"],
+  go: ["go"],
+  rust: ["rs"],
+  c: ["c", "h"],
+  cpp: ["cpp", "cc", "cxx", "hpp"],
 };
 
 interface Snippet {
@@ -1418,27 +1469,30 @@ interface Snippet {
 }
 
 async function cloneOrFetchRepo(repo: RepoConfig): Promise<string> {
-  const tempDir = path.join('/tmp', `termtyper-${repo.owner}-${repo.repo}`);
-  
+  const tempDir = path.join("/tmp", `termtyper-${repo.owner}-${repo.repo}`);
+
   if (fs.existsSync(tempDir)) {
     console.log(`Using cached repo: ${repo.owner}/${repo.repo}`);
     return tempDir;
   }
-  
+
   console.log(`Cloning ${repo.owner}/${repo.repo}...`);
-  
+
   const gitUrl = `https://github.com/${repo.owner}/${repo.repo}.git`;
-  const { execSync } = await import('child_process');
-  
+  const { execSync } = await import("child_process");
+
   try {
-    execSync(`git clone --depth 1 ${repo.branch ? `-b ${repo.branch}` : ''} ${gitUrl} ${tempDir}`, {
-      stdio: 'inherit',
-    });
+    execSync(
+      `git clone --depth 1 ${repo.branch ? `-b ${repo.branch}` : ""} ${gitUrl} ${tempDir}`,
+      {
+        stdio: "inherit",
+      },
+    );
   } catch (error) {
     console.error(`Failed to clone ${repo.owner}/${repo.repo}:`, error);
     throw error;
   }
-  
+
   return tempDir;
 }
 
@@ -1446,15 +1500,15 @@ function extractSnippets(repo: RepoConfig, localPath: string): Snippet[] {
   const snippets: Snippet[] = [];
   const exts = EXTENSIONS[repo.lang] || [];
   const files = walkDirectory(localPath, exts);
-  
+
   let count = 0;
   for (const file of files) {
     const candidates = extractSnippetsFromFile(file);
-    
+
     for (const candidate of candidates) {
       const difficulty = calculateDifficulty(candidate.content);
       const snippet: Snippet = {
-        id: `${repo.lang}_${repo.repo.replace(/-/g, '_')}_${String(count).padStart(4, '0')}`,
+        id: `${repo.lang}_${repo.repo.replace(/-/g, "_")}_${String(count).padStart(4, "0")}`,
         lang: repo.lang,
         repo: `${repo.owner}/${repo.repo}`,
         file: path.relative(localPath, candidate.file),
@@ -1463,27 +1517,29 @@ function extractSnippets(repo: RepoConfig, localPath: string): Snippet[] {
         chars: candidate.content,
         attribution_url: `https://github.com/${repo.owner}/${repo.repo}/blob/main/${path.relative(localPath, candidate.file)}#L${candidate.startLine}`,
       };
-      
+
       snippets.push(snippet);
       count++;
     }
   }
-  
-  console.log(`Extracted ${snippets.length} snippets from ${repo.owner}/${repo.repo}`);
+
+  console.log(
+    `Extracted ${snippets.length} snippets from ${repo.owner}/${repo.repo}`,
+  );
   return snippets;
 }
 
 async function main() {
-  const lang = process.argv[2] || 'all';
-  
-  const repos = lang === 'all' 
-    ? REPOS 
-    : getReposByLanguage(lang);
-  
-  console.log(`Extracting snippets for: ${repos.map(r => r.lang).join(', ')}`);
-  
+  const lang = process.argv[2] || "all";
+
+  const repos = lang === "all" ? REPOS : getReposByLanguage(lang);
+
+  console.log(
+    `Extracting snippets for: ${repos.map((r) => r.lang).join(", ")}`,
+  );
+
   const allSnippets: Snippet[] = [];
-  
+
   for (const repo of repos) {
     try {
       const localPath = await cloneOrFetchRepo(repo);
@@ -1493,10 +1549,16 @@ async function main() {
       console.error(`Error processing ${repo.owner}/${repo.repo}:`, error);
     }
   }
-  
-  const outputPath = path.join(process.cwd(), 'src', 'lib', 'data', 'snippets.json');
+
+  const outputPath = path.join(
+    process.cwd(),
+    "src",
+    "lib",
+    "data",
+    "snippets.json",
+  );
   fs.writeFileSync(outputPath, JSON.stringify(allSnippets, null, 2));
-  
+
   console.log(`\nTotal snippets: ${allSnippets.length}`);
   console.log(`Output: ${outputPath}`);
 }
@@ -1518,6 +1580,7 @@ git commit -m "feat: add corpus extraction pipeline main script"
 ### Task 17: Verify End-to-End
 
 **Files:**
+
 - All created files
 
 - [ ] **Step 1: Run type checking**
@@ -1563,18 +1626,18 @@ git commit -m "feat: complete termtyper v1 implementation"
 
 ## Spec Coverage Check
 
-| SPEC Section | Tasks |
-|--------------|-------|
-| §5.1 Input Model | Tasks 6, 8 (keystroke handling, tab as 1 char) |
-| §5.2 Whitespace | Task 8 (Character component handles · and ↵) |
-| §5.3 Metrics | Task 7 (WPM, accuracy, consistency) |
+| SPEC Section        | Tasks                                                  |
+| ------------------- | ------------------------------------------------------ |
+| §5.1 Input Model    | Tasks 6, 8 (keystroke handling, tab as 1 char)         |
+| §5.2 Whitespace     | Task 8 (Character component handles · and ↵)           |
+| §5.3 Metrics        | Task 7 (WPM, accuracy, consistency)                    |
 | §6.1 Page Structure | Task 4 (Config), Task 8 (TypingArea), Task 9 (Results) |
-| §6.2 Layout | Tasks 4, 8, 9 (dark mode, monospace) |
-| §6.3 Keyboard Nav | Task 8 (Escape handling) |
-| §7 Results | Task 9 (all metrics displayed) |
-| §8 Filter System | Task 10 (language/difficulty filtering) |
-| §9.1 Stack | Tasks 1-11 (SvelteKit, Tailwind) |
-| Appendix A Schema | Tasks 2, 12-16 |
+| §6.2 Layout         | Tasks 4, 8, 9 (dark mode, monospace)                   |
+| §6.3 Keyboard Nav   | Task 8 (Escape handling)                               |
+| §7 Results          | Task 9 (all metrics displayed)                         |
+| §8 Filter System    | Task 10 (language/difficulty filtering)                |
+| §9.1 Stack          | Tasks 1-11 (SvelteKit, Tailwind)                       |
+| Appendix A Schema   | Tasks 2, 12-16                                         |
 
 ---
 
