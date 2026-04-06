@@ -1,0 +1,72 @@
+[
+  {
+    "id": "python_requests_001",
+    "lang": "python",
+    "repo": "psf/requests",
+    "file": "requests/api.py",
+    "difficulty": "easy",
+    "length": 156,
+    "chars": "def get(url, params=None, **kwargs):\n    return request('GET', url, params=params, **kwargs)",
+    "attribution_url": "https://github.com/psf/requests/blob/main/src/requests/api.py#L20"
+  },
+  {
+    "id": "python_requests_002",
+    "lang": "python",
+    "repo": "psf/requests",
+    "file": "requests/sessions.py",
+    "difficulty": "medium",
+    "length": 234,
+    "chars": "class Session:\n    def __init__(self):\n        self.auth = None\n        self.headers = CaseInsensitiveDict()\n        self.cookies = cookiejar_from_dict({})\n        self.adapters = PendingDeque()",
+    "attribution_url": "https://github.com/psf/requests/blob/main/src/requests/sessions.py#L50"
+  },
+  {
+    "id": "javascript_react_001",
+    "lang": "javascript",
+    "repo": "facebook/react",
+    "file": "packages/react/src/React.js",
+    "difficulty": "easy",
+    "length": 98,
+    "chars": "export function useState(initialState) {\n  const dispatcher = resolveDispatcher();\n  return dispatcher.useState(initialState);\n}",
+    "attribution_url": "https://github.com/facebook/react/blob/main/packages/react/src/React.js#L20"
+  },
+  {
+    "id": "typescript_placeholder_001",
+    "lang": "typescript",
+    "repo": "microsoft/typescript",
+    "file": "src/compiler/types.ts",
+    "difficulty": "hard",
+    "length": 267,
+    "chars": "interface TypeMapper {\n  kind: TypeKind.Mapped;\n  typeParameter: TypeParameter;\n  templateType: Type;\n  modifiers?: MappedTypeModifiers;\n  symbol?: Symbol;\n}",
+    "attribution_url": "https://github.com/microsoft/typescript/blob/main/src/compiler/types.ts#L1500"
+  },
+  {
+    "id": "go_gin_001",
+    "lang": "go",
+    "repo": "gin-gonic/gin",
+    "file": "context.go",
+    "difficulty": "medium",
+    "length": 189,
+    "chars": "func (c *Context) JSON(code int, obj interface{}) {\n\tc.Writer.Header().Set(\"Content-Type\", \"application/json\")\n\tc.Writer.WriteHeader(code)\n\tencoder := json.NewEncoder(c.Writer)\n\tencoder.Encode(obj)\n}",
+    "attribution_url": "https://github.com/gin-gonic/gin/blob/master/context.go#L500"
+  },
+  {
+    "id": "rust_tokio_001",
+    "lang": "rust",
+    "repo": "tokio-rs/tokio",
+    "file": "tokio/src/runtime/mod.rs",
+    "difficulty": "hard",
+    "length": 198,
+    "chars": "pub fn block_on<F: Future>(future: F) -> F::Output {\n\tlet mut runtime = Builder::new()\n\t\t.current_thread()\n\t\t.enable_all()\n\t\t.build()\n\t\t.expect(\"failed to build runtime\");\n\truntime.block_on(future)\n}",
+    "attribution_url": "https://github.com/tokio-rs/tokio/blob/main/tokio/src/runtime/mod.rs#L100"
+  },
+  {
+    "id": "c_redis_001",
+    "lang": "c",
+    "repo": "redis/redis",
+    "file": "src/anet.c",
+    "difficulty": "hard",
+    "length": 245,
+    "chars": "int anetTcpAccept(char *err, int fd, char *ip, size_t ip_len, int *port) {\n    int cfd;\n    struct sockaddr_in sa;\n    socklen_t salen = sizeof(sa);\n    if ((cfd = accept(fd, (struct sockaddr *)&sa, &salen)) == -1) {",
+    "attribution_url": "https://github.com/redis/redis/blob/unstable/src/anet.c#L200"
+  }
+]

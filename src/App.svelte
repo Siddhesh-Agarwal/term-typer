@@ -1,89 +1,57 @@
-<script>
-  import svelteLogo from './assets/svelte.svg'
-  import viteLogo from './assets/vite.svg'
-  import heroImg from './assets/hero.png'
-  import Counter from './lib/Counter.svelte'
+<!-- src/App.svelte -->
+<script lang="ts">
+  import { gameState, currentSnippet } from './lib/stores/game';
+  import Config from './lib/components/Config.svelte';
+  import TypingArea from './lib/components/TypingArea.svelte';
+  import Results from './lib/components/Results.svelte';
+  import { typedCharacters } from './lib/stores/game';
+  import { calculateMetrics } from './lib/engine/metrics';
+  import { initTypingState } from './lib/engine/state';
+
+  import type { Metrics } from './lib/engine/metrics';
+
+  let metrics: Metrics = { grossWpm: 0, netWpm: 0, accuracy: 100, elapsedMs: 0, consistency: 0, timeToFirstError: null };
+  let elapsedMs = 0;
+  let finalMetricsCalculated = false;
+
+  $: if ($gameState === 'results' && $currentSnippet && !finalMetricsCalculated) {
+    const engine = initTypingState($currentSnippet.chars);
+    const charStates = $typedCharacters;
+    let totalErrors = 0;
+    for (const char of charStates) {
+      if (char.errors > 0) totalErrors += char.errors;
+    }
+    const finalEngine = {
+      ...engine,
+      currentIndex: $currentSnippet.length,
+      charStates,
+      totalErrors,
+      isComplete: true,
+    };
+    metrics = calculateMetrics(finalEngine, elapsedMs);
+    finalMetricsCalculated = true;
+  }
+
+  $: if ($gameState === 'config') {
+    finalMetricsCalculated = false;
+    elapsedMs = 0;
+  }
+
+  function handleKeydown(e: KeyboardEvent) {
+    if (e.key === 'Escape' && ($gameState === 'idle' || $gameState === 'active')) {
+      gameState.set('config');
+    }
+  }
 </script>
 
-<section id="center">
-  <div class="hero">
-    <img src={heroImg} class="base" width="170" height="179" alt="" />
-    <img src={svelteLogo} class="framework" alt="Svelte logo" />
-    <img src={viteLogo} class="vite" alt="Vite logo" />
-  </div>
-  <div>
-    <h1>Get started</h1>
-    <p>Edit <code>src/App.svelte</code> and save to test <code>HMR</code></p>
-  </div>
-  <Counter />
-</section>
+<svelte:window on:keydown={handleKeydown} />
 
-<div class="ticks"></div>
-
-<section id="next-steps">
-  <div id="docs">
-    <svg class="icon" role="presentation" aria-hidden="true">
-      <use href="/icons.svg#documentation-icon"></use>
-    </svg>
-    <h2>Documentation</h2>
-    <p>Your questions, answered</p>
-    <ul>
-      <li>
-        <a href="https://vite.dev/" target="_blank" rel="noreferrer">
-          <img class="logo" src={viteLogo} alt="" />
-          Explore Vite
-        </a>
-      </li>
-      <li>
-        <a href="https://svelte.dev/" target="_blank" rel="noreferrer">
-          <img class="button-icon" src={svelteLogo} alt="" />
-          Learn more
-        </a>
-      </li>
-    </ul>
-  </div>
-  <div id="social">
-    <svg class="icon" role="presentation" aria-hidden="true">
-      <use href="/icons.svg#social-icon"></use>
-    </svg>
-    <h2>Connect with us</h2>
-    <p>Join the Vite community</p>
-    <ul>
-      <li>
-        <a href="https://github.com/vitejs/vite" target="_blank" rel="noreferrer">
-          <svg class="button-icon" role="presentation" aria-hidden="true">
-            <use href="/icons.svg#github-icon"></use>
-          </svg>
-          GitHub
-        </a>
-      </li>
-      <li>
-        <a href="https://chat.vite.dev/" target="_blank" rel="noreferrer">
-          <svg class="button-icon" role="presentation" aria-hidden="true">
-            <use href="/icons.svg#discord-icon"></use>
-          </svg>
-          Discord
-        </a>
-      </li>
-      <li>
-        <a href="https://x.com/vite_js" target="_blank" rel="noreferrer">
-          <svg class="button-icon" role="presentation" aria-hidden="true">
-            <use href="/icons.svg#x-icon"></use>
-          </svg>
-          X.com
-        </a>
-      </li>
-      <li>
-        <a href="https://bsky.app/profile/vite.dev" target="_blank" rel="noreferrer">
-          <svg class="button-icon" role="presentation" aria-hidden="true">
-            <use href="/icons.svg#bluesky-icon"></use>
-          </svg>
-          Bluesky
-        </a>
-      </li>
-    </ul>
-  </div>
-</section>
-
-<div class="ticks"></div>
-<section id="spacer"></section>
+<main class="min-h-screen bg-bg">
+  {#if $gameState === 'config'}
+    <Config />
+  {:else if $gameState === 'idle' || $gameState === 'active'}
+    <TypingArea bind:elapsedMs />
+  {:else if $gameState === 'results'}
+    <Results {metrics} {elapsedMs} />
+  {/if}
+</main>
