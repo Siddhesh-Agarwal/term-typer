@@ -7,7 +7,10 @@
     "dev": "vite",
     "build": "vite build",
     "preview": "vite preview",
-    "check": "svelte-check --tsconfig ./tsconfig.app.json && tsc -p tsconfig.node.json"
+    "check": "svelte-check --tsconfig ./tsconfig.app.json && tsc -p tsconfig.node.json",
+    "extract": "tsx scripts/extract/index.ts",
+    "extract:python": "tsx scripts/extract/index.ts python",
+    "extract:all": "tsx scripts/extract/index.ts all"
   },
   "devDependencies": {
     "@sveltejs/vite-plugin-svelte": "^7.0.0",
@@ -19,6 +22,7 @@
     "svelte": "^5.53.12",
     "svelte-check": "^4.4.5",
     "tailwindcss": "^4.2.2",
+    "tsx": "^4.21.0",
     "typescript": "~5.9.3",
     "vite": "^8.0.1"
   }
