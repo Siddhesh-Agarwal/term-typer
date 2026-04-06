@@ -13,7 +13,7 @@
   let metrics: Metrics = { grossWpm: 0, netWpm: 0, accuracy: 100, elapsedMs: 0, consistency: 0, timeToFirstError: null };
   let timerInterval: ReturnType<typeof setInterval> | null = null;
   let startTime = 0;
-  let elapsedMs = 0;
+  export let elapsedMs = 0;
 
   $: if ($gameState === 'idle' && $selectedLanguage && $selectedDifficulty) {
     const filtered = snippets.filter(
