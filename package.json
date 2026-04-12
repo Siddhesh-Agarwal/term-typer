@@ -13,6 +13,7 @@
     "extract:all": "tsx scripts/extract/index.ts all"
   },
   "devDependencies": {
+    "@sveltejs/adapter-cloudflare": "^7.2.8",
     "@sveltejs/vite-plugin-svelte": "^7.0.0",
     "@tailwindcss/postcss": "^4.2.2",
     "@tailwindcss/vite": "^4.2.2",
@@ -25,5 +26,8 @@
     "tsx": "^4.21.0",
     "typescript": "~5.9.3",
     "vite": "^8.0.1"
+  },
+  "dependencies": {
+    "lucide-svelte": "^1.0.1"
   }
 }

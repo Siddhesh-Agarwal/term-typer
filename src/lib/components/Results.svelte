@@ -2,6 +2,7 @@
 <script lang="ts">
   import { gameState, currentSnippet } from '../stores/game';
   import type { Metrics } from '../engine/metrics';
+  import { Download } from 'lucide-svelte';
   
   export let metrics: Metrics;
   export let elapsedMs: number;
@@ -18,6 +19,83 @@
 
   function backToConfig() {
     gameState.set('config');
+  }
+
+  function downloadResult() {
+    const canvas = document.createElement('canvas');
+    const ctx = canvas.getContext('2d');
+    if (!ctx) return;
+
+    canvas.width = 800;
+    canvas.height = 600;
+
+    ctx.fillStyle = '#0d1117';
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+    ctx.fillStyle = '#58a6ff';
+    ctx.font = 'bold 48px monospace';
+    ctx.textAlign = 'center';
+    ctx.fillText('termtyper', 400, 60);
+    
+    ctx.fillStyle = '#8b949e';
+    ctx.font = '20px monospace';
+    ctx.fillText('Results', 400, 100);
+
+    ctx.strokeStyle = '#30363d';
+    ctx.lineWidth = 2;
+    ctx.strokeRect(50, 130, 700, 400);
+
+    const metricsData = [
+      { label: 'Net WPM', value: metrics.netWpm.toString(), color: '#3fb950' },
+      { label: 'Gross WPM', value: metrics.grossWpm.toString(), color: '#58a6ff' },
+      { label: 'Accuracy', value: `${metrics.accuracy}%`, color: '#f85149' },
+    ];
+
+    metricsData.forEach((m, i) => {
+      const x = 150 + i * 200;
+      const y = 220;
+      
+      ctx.fillStyle = m.color;
+      ctx.font = 'bold 56px monospace';
+      ctx.textAlign = 'center';
+      ctx.fillText(m.value, x, y);
+      
+      ctx.fillStyle = '#8b949e';
+      ctx.font = '18px monospace';
+      ctx.fillText(m.label, x, y + 40);
+    });
+
+    const secondaryData = [
+      { label: 'Consistency', value: `${metrics.consistency}%` },
+      { label: 'Time', value: `${Math.floor(elapsedMs / 60000)}:${(Math.floor(elapsedMs / 1000) % 60).toString().padStart(2, '0')}` },
+    ];
+
+    secondaryData.forEach((s, i) => {
+      const x = 250 + i * 300;
+      const y = 360;
+      
+      ctx.fillStyle = '#ffffff';
+      ctx.font = 'bold 32px monospace';
+      ctx.textAlign = 'center';
+      ctx.fillText(s.value, x, y);
+      
+      ctx.fillStyle = '#8b949e';
+      ctx.font = '16px monospace';
+      ctx.fillText(s.label, x, y + 30);
+    });
+
+    if ($currentSnippet) {
+      ctx.fillStyle = '#8b949e';
+      ctx.font = '14px monospace';
+      ctx.textAlign = 'center';
+      ctx.fillText(`From: ${$currentSnippet.repo} | ${$currentSnippet.file}`, 400, 480);
+      ctx.fillText(`Language: ${$currentSnippet.lang} | Difficulty: ${$currentSnippet.difficulty}`, 400, 500);
+    }
+
+    const link = document.createElement('a');
+    link.download = `termtyper-result-${Date.now()}.png`;
+    link.href = canvas.toDataURL('image/png');
+    link.click();
   }
 </script>
 
@@ -66,6 +144,10 @@
       </button>
       <button class="flex-1 py-3 border border-border rounded-lg hover:border-accent" on:click={retry}>
         Retry This
+      </button>
+      <button class="flex-1 py-3 border border-border rounded-lg hover:border-accent flex items-center justify-center gap-2" on:click={downloadResult}>
+        <Download size={18} />
+        Download
       </button>
       <button class="py-3 px-6 border border-border rounded-lg" on:click={backToConfig}>
         Config
