@@ -46,8 +46,8 @@
     ctx.strokeRect(50, 130, 700, 400);
 
     const metricsData = [
-      { label: 'Net WPM', value: metrics.netWpm.toString(), color: '#3fb950' },
-      { label: 'Gross WPM', value: metrics.grossWpm.toString(), color: '#58a6ff' },
+      { label: 'Net TPM', value: metrics.netTpm.toString(), color: '#3fb950' },
+      { label: 'Gross TPM', value: metrics.grossTpm.toString(), color: '#58a6ff' },
       { label: 'Accuracy', value: `${metrics.accuracy}%`, color: '#f85149' },
     ];
 
@@ -105,12 +105,12 @@
     
     <div class="grid grid-cols-3 gap-4 mb-8">
       <div class="text-center p-4 bg-bg rounded-lg">
-        <div class="text-4xl font-bold text-correct">{metrics.netWpm}</div>
-        <div class="text-sm text-gray-500">Net WPM</div>
+        <div class="text-4xl font-bold text-correct">{metrics.netTpm}</div>
+        <div class="text-sm text-gray-500">Net TPM</div>
       </div>
       <div class="text-center p-4 bg-bg rounded-lg">
-        <div class="text-4xl font-bold">{metrics.grossWpm}</div>
-        <div class="text-sm text-gray-500">Gross WPM</div>
+        <div class="text-4xl font-bold">{metrics.grossTpm}</div>
+        <div class="text-sm text-gray-500">Gross TPM</div>
       </div>
       <div class="text-center p-4 bg-bg rounded-lg">
         <div class="text-4xl font-bold">{metrics.accuracy}%</div>

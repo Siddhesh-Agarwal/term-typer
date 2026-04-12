@@ -1,6 +1,6 @@
 <!-- src/App.svelte -->
 <script lang="ts">
-  import { gameState, currentSnippet } from './lib/stores/game';
+  import { gameState, currentSnippet, selectedLanguage } from './lib/stores/game';
   import Config from './lib/components/Config.svelte';
   import TypingArea from './lib/components/TypingArea.svelte';
   import Results from './lib/components/Results.svelte';
@@ -10,12 +10,12 @@
 
   import type { Metrics } from './lib/engine/metrics';
 
-  let metrics: Metrics = { grossWpm: 0, netWpm: 0, accuracy: 100, elapsedMs: 0, consistency: 0, timeToFirstError: null };
+  let metrics: Metrics = { grossTpm: 0, netTpm: 0, accuracy: 100, elapsedMs: 0, consistency: 0, timeToFirstError: null };
   let elapsedMs = 0;
   let finalMetricsCalculated = false;
 
   $: if ($gameState === 'results' && $currentSnippet && !finalMetricsCalculated) {
-    const engine = initTypingState($currentSnippet.chars);
+    const engine = initTypingState($currentSnippet.chars, $currentSnippet.lang);
     const charStates = $typedCharacters;
     let totalErrors = 0;
     for (const char of charStates) {
@@ -28,7 +28,7 @@
       totalErrors,
       isComplete: true,
     };
-    metrics = calculateMetrics(finalEngine, elapsedMs);
+    metrics = calculateMetrics(finalEngine, elapsedMs, $currentSnippet.lang);
     finalMetricsCalculated = true;
   }
 

@@ -10,7 +10,7 @@
   const snippets = snippetsData as Snippet[];
 
   let engine: TypingEngine | null = null;
-  let metrics: Metrics = { grossWpm: 0, netWpm: 0, accuracy: 100, elapsedMs: 0, consistency: 0, timeToFirstError: null };
+  let metrics: Metrics = { grossTpm: 0, netTpm: 0, accuracy: 100, elapsedMs: 0, consistency: 0, timeToFirstError: null };
   let timerInterval: ReturnType<typeof setInterval> | null = null;
   let startTime = 0;
   export let elapsedMs = 0;
@@ -23,9 +23,9 @@
     if (filtered.length > 0) {
       const random = filtered[Math.floor(Math.random() * filtered.length)];
       currentSnippet.set(random);
-      engine = initTypingState(random.chars);
+      engine = initTypingState(random.chars, random.lang);
       typedCharacters.set(engine.charStates);
-      metrics = { grossWpm: 0, netWpm: 0, accuracy: 100, elapsedMs: 0, consistency: 0, timeToFirstError: null };
+      metrics = { grossTpm: 0, netTpm: 0, accuracy: 100, elapsedMs: 0, consistency: 0, timeToFirstError: null };
       gameState.set('active');
     }
   }
@@ -56,14 +56,14 @@
       startTime = engine.startTime;
       timerInterval = setInterval(() => {
         elapsedMs = performance.now() - startTime;
-        metrics = calculateMetrics(engine!, elapsedMs);
+        metrics = calculateMetrics(engine!, elapsedMs, $selectedLanguage);
       }, 500);
     }
     
     if (engine.isComplete) {
       if (timerInterval) clearInterval(timerInterval);
       elapsedMs = performance.now() - startTime;
-      metrics = calculateMetrics(engine, elapsedMs);
+      metrics = calculateMetrics(engine, elapsedMs, $selectedLanguage);
       gameState.set('results');
     }
   }
@@ -92,7 +92,7 @@
     </div>
     
     <div class="flex justify-between mt-4 text-gray-400">
-      <span>WPM: {metrics.netWpm}</span>
+      <span>TPM: {metrics.netTpm}</span>
       <span>Accuracy: {metrics.accuracy}%</span>
       <span>{Math.floor(elapsedMs / 60000)}:{(Math.floor(elapsedMs / 1000) % 60).toString().padStart(2, '0')}</span>
     </div>

@@ -2,6 +2,8 @@
 import type { CharState } from '../stores/game';
 
 export interface TypingEngine {
+  originalText: string;
+  language: string;
   chars: string;
   currentIndex: number;
   charStates: CharState[];
@@ -11,8 +13,10 @@ export interface TypingEngine {
   isComplete: boolean;
 }
 
-export function initTypingState(chars: string): TypingEngine {
+export function initTypingState(chars: string, language: string = 'python'): TypingEngine {
   return {
+    originalText: chars,
+    language,
     chars,
     currentIndex: 0,
     charStates: chars.split('').map((c) => ({

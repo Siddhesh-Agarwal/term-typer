@@ -1,21 +1,69 @@
 // src/lib/engine/metrics.ts
+import Prism from 'prismjs';
+import 'prismjs/components/prism-python';
+import 'prismjs/components/prism-javascript';
+import 'prismjs/components/prism-typescript';
+import 'prismjs/components/prism-go';
+import 'prismjs/components/prism-rust';
+import 'prismjs/components/prism-c';
+import 'prismjs/components/prism-cpp';
 import type { TypingEngine } from './state';
+import type { Language } from '../stores/game';
 
 export interface Metrics {
-  grossWpm: number;
-  netWpm: number;
+  grossTpm: number;
+  netTpm: number;
   accuracy: number;
   elapsedMs: number;
   consistency: number;
   timeToFirstError: number | null;
 }
 
-export function calculateMetrics(engine: TypingEngine, elapsedMs: number): Metrics {
-  const minutes = elapsedMs / 60000;
-  const charsTyped = engine.currentIndex;
-  const grossWpm = minutes > 0 ? charsTyped / 5 / minutes : 0;
-  const netWpm = grossWpm - (engine.totalErrors / minutes || 0);
+const languageMap: Record<string, string> = {
+  python: 'python',
+  javascript: 'javascript',
+  typescript: 'typescript',
+  go: 'go',
+  rust: 'rust',
+  c: 'c',
+  cpp: 'cpp',
+};
+
+function countTokens(code: string, lang: Language): number {
+  const prismLang = languageMap[lang] || 'javascript';
+  const tokens = Prism.tokenize(code, Prism.languages[prismLang]);
   
+  let count = 0;
+  function traverse(token: any): void {
+    if (typeof token === 'string') {
+      if (token.trim().length > 0) count++;
+    } else if (token.type && token.content) {
+      if (typeof token.content === 'string') {
+        if (token.content.trim().length > 0) count++;
+      } else if (Array.isArray(token.content)) {
+        token.content.forEach(traverse);
+      }
+    }
+  }
+  
+  tokens.forEach(traverse);
+  return count;
+}
+
+function countTokensTyped(code: string, currentIndex: number, lang: Language): number {
+  const prefix = code.substring(0, currentIndex);
+  return countTokens(prefix, lang);
+}
+
+export function calculateMetrics(engine: TypingEngine, elapsedMs: number, lang: Language): Metrics {
+  const minutes = elapsedMs / 60000;
+  const tokensTyped = countTokensTyped(engine.originalText, engine.currentIndex, lang);
+  const totalTokens = countTokens(engine.originalText, lang);
+  
+  const grossTpm = minutes > 0 ? tokensTyped / minutes : 0;
+  const netTpm = grossTpm - (engine.totalErrors / minutes || 0);
+  
+  const charsTyped = engine.currentIndex;
   const accuracy = charsTyped > 0 
     ? ((charsTyped - engine.totalErrors) / charsTyped) * 100 
     : 100;
@@ -38,8 +86,8 @@ export function calculateMetrics(engine: TypingEngine, elapsedMs: number): Metri
     : null;
 
   return {
-    grossWpm: Math.round(grossWpm),
-    netWpm: Math.round(Math.max(0, netWpm)),
+    grossTpm: Math.round(grossTpm),
+    netTpm: Math.round(Math.max(0, netTpm)),
     accuracy: Math.round(accuracy * 10) / 10,
     elapsedMs,
     consistency: Math.round(consistency),
