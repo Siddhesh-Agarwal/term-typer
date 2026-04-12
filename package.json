@@ -15,7 +15,6 @@
   "devDependencies": {
     "@sveltejs/adapter-cloudflare": "^7.2.8",
     "@sveltejs/vite-plugin-svelte": "^7.0.0",
-    "@tailwindcss/postcss": "^4.2.2",
     "@tailwindcss/vite": "^4.2.2",
     "@tsconfig/svelte": "^5.0.8",
     "@types/node": "^24.12.2",
@@ -29,6 +28,7 @@
     "vite": "^8.0.8"
   },
   "dependencies": {
+    "@fontsource-variable/jetbrains-mono": "^5.2.8",
     "lucide-svelte": "^1.0.1",
     "prismjs": "^1.30.0"
   }
