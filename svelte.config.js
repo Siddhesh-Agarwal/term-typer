@@ -5,11 +5,11 @@ const config = {
 	kit: {
 		adapter: adapter({
 			// See below for an explanation of these options
-			config: undefined,
+			config: "./wrangler.jsonc",
 			platformProxy: {
-				configPath: undefined,
-				environment: undefined,
-				persist: undefined
+				configPath: "wrangler.jsonc",
+				environment: "preview",
+				persist: true,
 			},
 			fallback: 'plaintext',
 			routes: {
