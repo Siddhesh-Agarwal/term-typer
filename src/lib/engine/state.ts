@@ -46,7 +46,9 @@ export function processKeystroke(engine: TypingEngine, key: string): TypingEngin
   }
 
   const startTime = engine.startTime ?? now;
-  const keystrokeTimes = [...engine.keystrokeTimes, now];
+  const keystrokeTimes = key.length === 1 || key === '\t' || key === '\n'
+    ? [...engine.keystrokeTimes, now]
+    : engine.keystrokeTimes;
   
   if (engine.currentIndex >= engine.chars.length) {
     return engine;

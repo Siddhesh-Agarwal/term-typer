@@ -69,7 +69,7 @@ export function calculateMetrics(engine: TypingEngine, elapsedMs: number, lang: 
     : 100;
 
   let consistency = 0;
-  if (engine.keystrokeTimes.length > 2) {
+  if (engine.keystrokeTimes.length >= 2) {
     const intervals: number[] = [];
     for (let i = 1; i < engine.keystrokeTimes.length; i++) {
       intervals.push(engine.keystrokeTimes[i] - engine.keystrokeTimes[i - 1]);
