@@ -3,4 +3,5 @@
   "name": "term-typer",
   "main": "./src/main.ts",
   "compatibility_date": "2026-04-12",
+  "compatibility_flags": ["nodejs_compat"]
 }
